@@ -18,13 +18,13 @@ Before running the plugin, the virtual web camera device needs to be created.
 `sudo modprobe v4l2loopback devices=1`
 
 The above command should create a single virtual webcam at `/dev/video1` (the number may change), which is the default stream output for the plugin script. This webcam can now be selected by software such as Zoom, browsers, etc.
-
 After downloading the TorchScript weights of your choice [here](https://drive.google.com/drive/u/1/folders/1cbetlrKREitIgjnIikG1HdM4x72FtgBh), launch the pluging with e.g.:
 ```python demo_webcam.py --model-checkpoint torchscript_resnet50_fp32.pth```
 
 - I was only able to get the `torchscript_resnet50_fp32` model to work. `torchscript_resnet_50_fp16` crashed on me. 
 
 Once the plugin is launched, a simple OpenCV-based UI will show two buttons:
+
 - Toggle between background selection view and (after snapping a background) actual matting
 - Cycle through target background options:
   1. Plain white
@@ -32,6 +32,26 @@ Once the plugin is launched, a simple OpenCV-based UI will show two buttons:
   3. Supplied target video background (samples included in this repo)
   4. Supplied target image background
 At any point, press Q to exit.
+
+# Troubleshooting
+If you get an error like the following:
+```bash
+python3 demo_webcam.py --model-checkpoint torchscript_mobilenetv2_fp16.pth
+Traceback (most recent call last):
+  File "/root/demo_webcam.py", line 586, in <module>
+    fake_camera = pyfakewebcam.FakeWebcam(args.camera_device, cam.width, cam.height)
+  File "/usr/local/lib/python3.9/dist-packages/pyfakewebcam/pyfakewebcam.py", line 54, in __init__
+    fcntl.ioctl(self._video_device, _v4l2.VIDIOC_S_FMT, self._settings)
+OSError: [Errno 22] Invalid argument
+FATAL: exception not rethrown
+Aborted
+```
+
+1. Do `ls /dev/ | grep video`(see all potential webcam outputs.)
+   - Most likely, `/dev/video0` is your actual webcam.
+2. Switch between webcam outputs using the `--camera-device` flag.
+   1. Ex: `python3 demo_webcam.py --camera-device /dev/video2 --model-checkpoint ...`
+3. You do not need to reinstall `pyfakewebcam`!.
 
 # Guidelines
 For best results:
