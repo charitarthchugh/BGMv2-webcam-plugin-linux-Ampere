@@ -10,6 +10,7 @@ This plugin requires Linux, because it relies on the [v4l2loopback kernel module
 3. Clone this repository(`git clone https://github.com/charitarthchugh/BGMv2-webcam-plugin-linux-Ampere`)
 4. Install Anaconda/ Miniconda if you have not already. This will **not work** with pip.
 5. Install required packages in `enviroment.yml` using `conda env create -f enviroment.yml`.
+6. Activate the environment using `conda activate BGMv2`
 
 # Directions
 
